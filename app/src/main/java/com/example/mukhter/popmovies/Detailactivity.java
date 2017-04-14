@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -15,6 +16,7 @@ public class Detailactivity extends AppCompatActivity {
      Plotsynopsis,
     Userrating,
     Releasedate;
+    RelativeLayout activity_detailactivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +32,14 @@ public class Detailactivity extends AppCompatActivity {
         String userrating = bundle.getString("Userrating");
         String releasedate = bundle.getString("Releasedate");
 
+
         thumbnail= (ImageView)findViewById(R.id.imagedetail);
         Picasso.with(this).load(image).into(thumbnail);
         Originaltitle =(TextView)findViewById(R.id.Movietitle);
         Plotsynopsis =(TextView)findViewById(R.id.plotsynopsis);
         Userrating=(TextView)findViewById(R.id.userrating);
        Releasedate =(TextView)findViewById(R.id.releasedate);
-Plotsynopsis.setMovementMethod(new ScrollingMovementMethod());
+
         Originaltitle.setText(originaltitle);
         Plotsynopsis.setText(plotsynopsis);
         Userrating.setText(userrating);
