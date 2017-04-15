@@ -19,16 +19,16 @@ import java.util.ArrayList;
 
 public class Imageadapter extends ArrayAdapter<Popularmovies_model> {
 
-        private Context context;
-       private int layoutresource;
+    private Context context;
+    private int layoutresource;
 
-        private ArrayList<Popularmovies_model> mgridData= new ArrayList<>();
+    private ArrayList<Popularmovies_model> mgridData = new ArrayList<>();
 
 
-    public Imageadapter(Context context,int layoutresource, ArrayList<Popularmovies_model> mgridData) {
+    public Imageadapter(Context context, int layoutresource, ArrayList<Popularmovies_model> mgridData) {
         super(context, layoutresource, mgridData);
         this.layoutresource = layoutresource;
-        this.context=context;
+        this.context = context;
         this.mgridData = mgridData;
     }
 
@@ -51,9 +51,12 @@ public class Imageadapter extends ArrayAdapter<Popularmovies_model> {
 
         Popularmovies_model item = mgridData.get(position);
 
-        Picasso.with(context).load(item.getImage()).into(holder.imageView);
+        Picasso.with(context).load(item.getImage()).placeholder(R.drawable.placeholderimage)
+                .error(R.drawable.errorimage)
+                .into(holder.imageView);
         return row;
     }
+
 
     static class ViewHolder {
         ImageView imageView;

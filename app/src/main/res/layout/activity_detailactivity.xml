@@ -4,110 +4,109 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-<RelativeLayout
-    android:id="@+id/activity_detailactivity"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.mukhter.popmovies.Detailactivity">
 
+        <RelativeLayout
+            android:id="@+id/activity_detailactivity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.example.mukhter.popmovies.Detailactivity">
 
-
-
-
-
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Chapie is a robot."
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:id="@+id/plotsynopsis"
-        android:scrollbars="vertical"
-        android:layout_below="@+id/relativelayout2"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="10dp" />
-    <View
-        android:id="@+id/SplitLine_hor1"
-        android:layout_width="match_parent"
-        android:layout_height= "2dp"
-        android:background="#c0c0c0"
-        android:layout_below="@+id/plotsynopsis"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/relativelayout2"
-        android:layout_below="@+id/titlerelativelayout"
-        android:layout_alignParentStart="false">
-
-        <ImageView
-            android:layout_width="170dp"
-            android:layout_height="180dp"
-            android:layout_marginTop="5dp"
-            android:id="@+id/imagedetail"
-            android:layout_marginStart="7dp"
-            android:scaleType="fitStart" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/linearlayout1"
-            android:orientation="vertical"
-            android:layout_alignParentEnd="true">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/plotsynopsis"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="2015-02-23"
-                android:textSize="24sp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="70dp"
-                android:id="@+id/releasedate"
-                />
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/relativelayout2"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="20dp"
+                android:padding="8dp"
+                android:scrollbars="vertical"
+                android:text="Chapie is a robot."
+                android:textSize="@dimen/medium_size" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <View
+                android:id="@+id/SplitLine_hor1"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/plotsynopsis"
+                android:background="#c0c0c0" />
+
+            <RelativeLayout
+                android:id="@+id/relativelayout2"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="8.3/10"
-                android:textSize="20sp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="115dp"
-                android:fontFamily="serif"
-                android:id="@+id/userrating"/>
+                android:layout_alignParentLeft="false"
+                android:layout_below="@+id/titlerelativelayout">
+
+                <ImageView
+                    android:id="@+id/imagedetail"
+                    android:layout_width="170dp"
+                    android:layout_height="180dp"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginTop="5dp"
+                    android:scaleType="fitStart" />
+
+                <LinearLayout
+                    android:id="@+id/linearlayout1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/releasedate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="70dp"
+                        android:layout_marginTop="10dp"
+                        android:textSize="@dimen/big_size"
+                        tools:text="2015-02-23" />
+
+                    <TextView
+                        android:id="@+id/userrating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="115dp"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="serif"
+                        android:text="8.3/10"
+                        android:textSize="@dimen/small_size" />
 
 
-        </LinearLayout>
+                </LinearLayout>
 
-    </RelativeLayout>
+            </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:id="@+id/titlerelativelayout"
-        android:background="#009688"
-        android:layout_height="110dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+            <RelativeLayout
+                android:id="@+id/titlerelativelayout"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@color/backgroundtop">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Chappie"
-            android:textSize="35sp"
-            android:padding="15dp"
-            android:textColor="#ffffff"
-          android:maxLines="1"
-            android:id="@+id/Movietitle"
-            android:layout_marginTop="19dp" />
+                <TextView
+                    android:id="@+id/Movietitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:padding="15dp"
+                    android:text="Chappie"
+                    android:textColor="#ffffff"
+                    android:textSize="35sp"
+                    android:ellipsize="end"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
 
-    </RelativeLayout>
+            </RelativeLayout>
 
-</RelativeLayout>
+        </RelativeLayout>
 
     </LinearLayout>
-    </ScrollView>
+</ScrollView>

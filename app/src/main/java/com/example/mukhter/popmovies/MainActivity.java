@@ -14,8 +14,8 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
-import com.example.mukhter.popmovies.Network.InternetConnection;
-import com.example.mukhter.popmovies.Network.Networkutils;
+import com.example.mukhter.popmovies.network.InternetConnection;
+import com.example.mukhter.popmovies.network.Networkutils;
 import com.example.mukhter.popmovies.model.Popularmovies_model;
 
 import org.json.JSONArray;
@@ -29,26 +29,25 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     String items;
-    private static final String POP_MOVIE= "popular";
-    private static final String TOP_RATED= "top_rated";
-    private static final String BASE_IMAGE="http://image.tmdb.org/t/p/w185/";
+    private static final String POP_MOVIE = "popular";
+    private static final String TOP_RATED = "top_rated";
+    private static final String BASE_IMAGE = "http://image.tmdb.org/t/p/w185/";
     GridView gridView;
     JSONArray array;
     JSONObject part;
-    String title;
     static List<String> urls;
-    ArrayList<Popularmovies_model>arrayList;
+    ArrayList<Popularmovies_model> arrayList;
 
     Imageadapter imageadapter;
     ProgressDialog mprogressbar;
-  Context context=this;
+    Context context = this;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-         gridView = (GridView)findViewById(R.id.grid);
+        gridView = (GridView) findViewById(R.id.grid);
         if (InternetConnection.checkConnection(context)) {
 //internet available
         } else {
@@ -57,27 +56,22 @@ public class MainActivity extends AppCompatActivity {
 
 
         arrayList = new ArrayList<>(); // initializing the arraylist
-      mprogressbar= new ProgressDialog(this);
-
+        mprogressbar = new ProgressDialog(this);
         SearchQuery(POP_MOVIE);  // by default populates the screen with popular movies
-
-        imageadapter = new Imageadapter(this,R.layout.singleitem,arrayList);
+        imageadapter = new Imageadapter(this, R.layout.singleitem, arrayList);
 
         gridView.setAdapter(imageadapter);
-         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Popularmovies_model popposition = (Popularmovies_model)parent.getItemAtPosition(position);
-     Intent intent = new Intent(MainActivity.this,Detailactivity.class);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Popularmovies_model popposition = (Popularmovies_model) parent.getItemAtPosition(position);
 
-        intent.putExtra("Image",popposition.getImage());
-        intent.putExtra("Originaltitle",popposition.getOriginaltitle());
-        intent.putExtra("Plotsynopsis",popposition.getPlotsynopsis());
-        intent.putExtra("Userrating",popposition.getUserrating());
-        intent.putExtra("Releasedate",popposition.getReleasedate());
-        startActivity(intent);
-    }
-});
+                Intent intent = new Intent(MainActivity.this, Detailactivity.class);
+                intent.putExtra("Popmovies", popposition);
+
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -85,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             mprogressbar.setMessage("Loading...");
-            mprogressbar.setCancelable(false);
+            mprogressbar.setCancelable(true);
             mprogressbar.show();
             super.onPreExecute();
         }
@@ -94,24 +88,24 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(URL... params) {
             URL searchUrl = params[0];
             String Results = null;
-            urls= new ArrayList<>();
+            urls = new ArrayList<>();
             Popularmovies_model movie;
             try {
                 Results = Networkutils.getResponseFromHttpUrl(searchUrl);
                 JSONObject jsonObject = new JSONObject(Results);
                 items = jsonObject.getString("results");
-                  array = new JSONArray(items);
+                array = new JSONArray(items);
 
-                for(int i=0;i<array.length();i++) {
+                for (int i = 0; i < array.length(); i++) {
                     movie = new Popularmovies_model();
                     part = array.getJSONObject(i);
-                    if (null != part&& part.length() > 0) {
+                    if (null != part && part.length() > 0) {
                         if (part != null) {
-                            String path =part.getString("poster_path");
+                            String path = part.getString("poster_path");
                             movie.setImage(BASE_IMAGE + path);
                             Log.i("String", part.getString("poster_path"));
 
-                              String originaltitle = part.getString("original_title");
+                            String originaltitle = part.getString("original_title");
                             movie.setOriginaltitle(originaltitle);
 
                             String plotsynopsis = part.getString("overview");
@@ -130,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     arrayList.add(movie);
                 }
 
-                Log.i("This",items);
+                Log.i("This", items);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -143,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-        mprogressbar.cancel();
+            mprogressbar.cancel();
             imageadapter.setGridData(arrayList);
 
 
@@ -155,19 +149,20 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.sortby_pop) {
             arrayList.clear();
-          SearchQuery(POP_MOVIE);
+            SearchQuery(POP_MOVIE);
 
 
             return true;
-        }else if(itemThatWasClickedId==R.id.sortby_toprated){
+        } else if (itemThatWasClickedId == R.id.sortby_toprated) {
             arrayList.clear();
 
-        SearchQuery(TOP_RATED);
+            SearchQuery(TOP_RATED);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -178,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
         new DownloadTask().execute(SearchUrl);
 
     }
+
     @Override
     protected void onRestart() {
 

@@ -8,21 +8,22 @@ import android.os.Parcelable;
  */
 
 public class Popularmovies_model implements Parcelable {
-  String image;
-    String originaltitle;
-    String plotsynopsis;
-    String userrating;
-    String releasedate;
+    public String image;
+    public String originaltitle;
+    public String plotsynopsis;
+    public String userrating;
+    public String releasedate;
 
     public Popularmovies_model() {
-       super();
+        super();
     }
-    private Popularmovies_model(Parcel parcel){
-        image=parcel.readString();
-        originaltitle=parcel.readString();
-         plotsynopsis=parcel.readString();
-         userrating=parcel.readString();
-         releasedate=parcel.readString();
+
+    private Popularmovies_model(Parcel parcel) {
+        image = parcel.readString();
+        originaltitle = parcel.readString();
+        plotsynopsis = parcel.readString();
+        userrating = parcel.readString();
+        releasedate = parcel.readString();
     }
 
     public static final Creator<Popularmovies_model> CREATOR = new Creator<Popularmovies_model>() {

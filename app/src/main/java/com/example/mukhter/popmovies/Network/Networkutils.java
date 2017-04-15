@@ -1,4 +1,4 @@
-package com.example.mukhter.popmovies.Network;
+package com.example.mukhter.popmovies.network;
 
 import android.net.Uri;
 import android.util.Log;
@@ -16,21 +16,20 @@ import java.util.Scanner;
 
 public final class Networkutils {
     private static final String TAG = Networkutils.class.getSimpleName();
-   private static final String API_KEY="0e067356a27385b1d3ffd877d6773f75"; //API key required
-    private static  final String BASE_URL ="http://api.themoviedb.org/3/movie";
-    private static final String POP_MOVIE= "popular";
-    private static final String TOP_RATED= "top_rated";
+    private static final String API_KEY = "0e067356a27385b1d3ffd877d6773f75"; //API key required
+    private static final String BASE_URL = "http://api.themoviedb.org/3/movie";
+    private static final String POP_MOVIE = "popular";
+    private static final String TOP_RATED = "top_rated";
 
 
-    private static final  String queryparam ="api_key";
-
+    private static final String queryparam = "api_key";
 
 
     public static URL buildUrl(String Query) {
 
         Uri builtUri = Uri.parse(BASE_URL).buildUpon().
                 appendPath(Query)
-                .appendQueryParameter(queryparam,API_KEY)
+                .appendQueryParameter(queryparam, API_KEY)
                 .build();
 
         URL url = null;
