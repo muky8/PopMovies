@@ -3,8 +3,10 @@ package com.example.mukhter.popmovies;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -32,12 +34,12 @@ public class MainActivity extends AppCompatActivity {
     private static final String POP_MOVIE = "popular";
     private static final String TOP_RATED = "top_rated";
     private static final String BASE_IMAGE = "http://image.tmdb.org/t/p/w185/";
-    GridView gridView;
+    private GridView gridView;
     JSONArray array;
     JSONObject part;
     static List<String> urls;
     ArrayList<Popularmovies_model> arrayList;
-
+    static int mcurrentposition;
     Imageadapter imageadapter;
     ProgressDialog mprogressbar;
     Context context = this;
@@ -49,29 +51,43 @@ public class MainActivity extends AppCompatActivity {
 
         gridView = (GridView) findViewById(R.id.grid);
         if (InternetConnection.checkConnection(context)) {
-//internet available
+            //internet available
         } else {
             Toast.makeText(context, "Check internet connection", Toast.LENGTH_SHORT).show();
         }
 
 
         arrayList = new ArrayList<>(); // initializing the arraylist
-        mprogressbar = new ProgressDialog(this);
-        SearchQuery(POP_MOVIE);  // by default populates the screen with popular movies
-        imageadapter = new Imageadapter(this, R.layout.singleitem, arrayList);
 
+        mprogressbar = new ProgressDialog(this);
+
+        SearchQuery(POP_MOVIE);
+
+        // by default populates the screen with popular movies
+        imageadapter = new Imageadapter(this, R.layout.singleitem, arrayList);
         gridView.setAdapter(imageadapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Popularmovies_model popposition = (Popularmovies_model) parent.getItemAtPosition(position);
-
                 Intent intent = new Intent(MainActivity.this, Detailactivity.class);
                 intent.putExtra("Popmovies", popposition);
-
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int m = savedInstanceState.getInt("mystate");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mcurrentposition = gridView.getFirstVisiblePosition();
+        outState.putInt("mystate", mcurrentposition);
     }
 
 
@@ -155,13 +171,14 @@ public class MainActivity extends AppCompatActivity {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.sortby_pop) {
             arrayList.clear();
+            Toast.makeText(context, "Sorting by Popular Movies", Toast.LENGTH_SHORT).show();
             SearchQuery(POP_MOVIE);
 
 
             return true;
         } else if (itemThatWasClickedId == R.id.sortby_toprated) {
             arrayList.clear();
-
+            Toast.makeText(context, "Sorting by Top Rated Movies", Toast.LENGTH_SHORT).show();
             SearchQuery(TOP_RATED);
         }
         return super.onOptionsItemSelected(item);
@@ -171,17 +188,6 @@ public class MainActivity extends AppCompatActivity {
         URL SearchUrl = Networkutils.buildUrl(sort);
 
         new DownloadTask().execute(SearchUrl);
-
-    }
-
-    @Override
-    protected void onRestart() {
-
-        // TODO Auto-generated method stub
-        super.onRestart();
-        Intent i = new Intent(MainActivity.this, MainActivity.class);
-        startActivity(i);
-        finish();
 
     }
 
