@@ -13,6 +13,8 @@ public class Popularmovies_model implements Parcelable {
     public String plotsynopsis;
     public String userrating;
     public String releasedate;
+    public String backdrop;
+    public String id;
 
     public Popularmovies_model() {
         super();
@@ -24,6 +26,8 @@ public class Popularmovies_model implements Parcelable {
         plotsynopsis = parcel.readString();
         userrating = parcel.readString();
         releasedate = parcel.readString();
+        backdrop=parcel.readString();
+        id =parcel.readString();
     }
 
     public static final Creator<Popularmovies_model> CREATOR = new Creator<Popularmovies_model>() {
@@ -78,6 +82,22 @@ public class Popularmovies_model implements Parcelable {
         this.releasedate = releasedate;
     }
 
+    public String getBackdrop() {
+        return backdrop;
+    }
+
+    public void setBackdrop(String backdrop) {
+        this.backdrop = backdrop;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -90,5 +110,7 @@ public class Popularmovies_model implements Parcelable {
         parcel.writeString(plotsynopsis);
         parcel.writeString(userrating);
         parcel.writeString(releasedate);
+        parcel.writeString(backdrop);
+        parcel.writeString(id);
     }
 }

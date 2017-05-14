@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffff"
+    >
+
+    <TextView
+        android:text="Review"
+        android:layout_width="match_parent"
+        android:padding="8dp"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        android:textSize="22sp"
+        android:paddingLeft="10dp"
+        android:layout_marginLeft="70dp"
+        android:scrollbars = "vertical"
+        android:id="@+id/reviewtext" />
+
+    <TextView
+        android:text="Content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:padding="10dp"
+        android:scrollbars = "vertical"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="39dp"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:text="Author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        android:textSize="16sp"
+        android:paddingLeft="10dp"
+        android:scrollbars = "vertical"
+        android:id="@+id/textView"
+        android:layout_marginTop="18dp"
+        android:layout_below="@+id/reviewtext"
+        android:layout_alignLeft="@+id/reviewtext"
+        android:layout_alignStart="@+id/reviewtext"
+        android:layout_marginLeft="33dp"
+        android:layout_marginStart="33dp" />
+
+    <TextView
+        android:text="Author :"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/textView3"
+        android:layout_marginLeft="55dp" />
+</RelativeLayout>

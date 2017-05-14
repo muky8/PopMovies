@@ -4,10 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +21,13 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.mukhter.popmovies.model.trailermodel;
 import com.example.mukhter.popmovies.network.InternetConnection;
 import com.example.mukhter.popmovies.network.Networkutils;
 import com.example.mukhter.popmovies.model.Popularmovies_model;
@@ -25,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,16 +47,18 @@ public class MainActivity extends AppCompatActivity {
     private static final String POP_MOVIE = "popular";
     private static final String TOP_RATED = "top_rated";
     private static final String BASE_IMAGE = "http://image.tmdb.org/t/p/w185/";
+    private static final String BASE_DROPIMAGE = "http://image.tmdb.org/t/p/w342/";
     private GridView gridView;
     JSONArray array;
     JSONObject part;
     static List<String> urls;
     ArrayList<Popularmovies_model> arrayList;
+   static ArrayList<trailermodel> secarrayList;
     static int mcurrentposition;
     Imageadapter imageadapter;
     ProgressDialog mprogressbar;
     Context context = this;
-
+    ActionBar actionBar;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,13 +70,19 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(context, "Check internet connection", Toast.LENGTH_SHORT).show();
         }
-
-
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        actionBar = getSupportActionBar();
+        actionBar.openOptionsMenu();
         arrayList = new ArrayList<>(); // initializing the arraylist
+        secarrayList = new ArrayList<>();
 
         mprogressbar = new ProgressDialog(this);
 
         SearchQuery(POP_MOVIE);
+
+
+
 
         // by default populates the screen with popular movies
         imageadapter = new Imageadapter(this, R.layout.singleitem, arrayList);
@@ -72,9 +93,11 @@ public class MainActivity extends AppCompatActivity {
                 Popularmovies_model popposition = (Popularmovies_model) parent.getItemAtPosition(position);
                 Intent intent = new Intent(MainActivity.this, Detailactivity.class);
                 intent.putExtra("Popmovies", popposition);
+
                 startActivity(intent);
             }
         });
+
     }
 
     @Override
@@ -121,6 +144,10 @@ public class MainActivity extends AppCompatActivity {
                             movie.setImage(BASE_IMAGE + path);
                             Log.i("String", part.getString("poster_path"));
 
+                            String backdrop = part.getString("backdrop_path");
+                            movie.setBackdrop(BASE_DROPIMAGE + backdrop);
+
+
                             String originaltitle = part.getString("original_title");
                             movie.setOriginaltitle(originaltitle);
 
@@ -133,6 +160,9 @@ public class MainActivity extends AppCompatActivity {
                             String releasedate = part.getString("release_date");
                             movie.setReleasedate(releasedate);
 
+                            String id =part.getString("id");
+                            movie.setId(id);
+                            String key =movie.getId();
 
                         }
 
@@ -155,9 +185,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             mprogressbar.cancel();
             imageadapter.setGridData(arrayList);
-
-
-        }
+   }
     }
 
     @Override
@@ -181,14 +209,88 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(context, "Sorting by Top Rated Movies", Toast.LENGTH_SHORT).show();
             SearchQuery(TOP_RATED);
         }
+        else if (itemThatWasClickedId == R.id.sortby_Favourites) {
+
+            Intent intent = new Intent(this, FavouriteMovies.class);
+            startActivity(intent);
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
     private void SearchQuery(String sort) {
         URL SearchUrl = Networkutils.buildUrl(sort);
-
         new DownloadTask().execute(SearchUrl);
 
     }
 
+
+
+    public static URL url = null;
+
+
+
+
+    public static URL buildUrltrailer(String key) {
+
+        Uri builtUri = Uri.parse(fetchtrailer.BASE_URL).buildUpon()
+                .appendPath(key).
+                        appendPath(fetchtrailer.VIDEO)
+                .appendQueryParameter(fetchtrailer.queryparam, fetchtrailer.API_KEY)
+                .build();
+
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Log.i("Trailer", "Built URI " + url);
+
+        return url;
+    }
+    void testmethod(){
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+               url.toString(), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        trailermodel trailer;
+                        try {
+                            String res = response.toString();
+                            JSONObject initial = new JSONObject(res);
+                            JSONArray results = initial.getJSONArray("results");
+
+
+                            for (int i = 0; i < results.length(); i++) {
+                                JSONObject obj = results.getJSONObject(i);
+                                String key = obj.getString("key");
+                                String name = obj.getString("name");
+                                trailer= new trailermodel();
+                                trailer.setMoviename(name);
+
+                                trailer.setKey(key);
+                                Log.i("key",name);
+                                secarrayList.add(trailer);
+                            }
+
+                            Log.i("Response", response.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("", "Error: " + error.getMessage());
+                // hide the progress dialog
+
+            }
+        });
+
+        Volley.newRequestQueue(this).add(jsonObjReq);
+    }
 }
