@@ -30,8 +30,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.mukhter.popmovies.MainActivity" />
         </activity>
-        <activity android:name=".Favourite"></activity>
-        <activity android:name=".FavouriteMovies"></activity>
     </application>
 
 </manifest>

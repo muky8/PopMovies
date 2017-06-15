@@ -8,16 +8,16 @@ import android.provider.BaseColumns;
  */
 
 public class MovieContract {
-    public static final String AUTHORITY = "com.example.mukhter.popmovies";
+    public static final String AUTHORITY = "com.example.mukhter.popmovie$s";
     public static final Uri BASE_URL = Uri.parse("content://" + AUTHORITY);
-    public static final String PATH = "movies";
+    public static final String PATH = "movie";
     private MovieContract(){
 
     }
 
     public static class MovieEntry implements BaseColumns {
         public  final static Uri CONTENT_URI = BASE_URL.buildUpon().appendPath(PATH).build();
-        public final static String TABLE_NAME = "movies";
+        public final static String TABLE_NAME = "movie";
 
         public final static String _ID = BaseColumns._ID;
         public final static String COLUMN_MOVIE_NAME = "name";

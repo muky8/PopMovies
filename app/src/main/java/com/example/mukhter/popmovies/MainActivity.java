@@ -12,6 +12,7 @@ import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -49,21 +50,27 @@ public class MainActivity extends AppCompatActivity {
     private static final String BASE_IMAGE = "http://image.tmdb.org/t/p/w185/";
     private static final String BASE_DROPIMAGE = "http://image.tmdb.org/t/p/w342/";
     private GridView gridView;
+
     JSONArray array;
     JSONObject part;
     static List<String> urls;
-    ArrayList<Popularmovies_model> arrayList;
-   static ArrayList<trailermodel> secarrayList;
+    ArrayList<Popularmovies_model> arrayList, secarray;
+    static ArrayList<trailermodel> secarrayList;
     static int mcurrentposition;
     Imageadapter imageadapter;
+    Imageadapter moviesAdapter;
     ProgressDialog mprogressbar;
     Context context = this;
     ActionBar actionBar;
+    MovieDbHelper moviedbh;
+    RecyclerView recyclerView;
+    private List<Popularmovies_model> List;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        moviedbh = new MovieDbHelper(this);
         gridView = (GridView) findViewById(R.id.grid);
         if (InternetConnection.checkConnection(context)) {
             //internet available
@@ -73,15 +80,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         actionBar = getSupportActionBar();
-        actionBar.openOptionsMenu();
         arrayList = new ArrayList<>(); // initializing the arraylist
         secarrayList = new ArrayList<>();
-
+        secarray = new ArrayList<>();
         mprogressbar = new ProgressDialog(this);
-
         SearchQuery(POP_MOVIE);
-
-
 
 
         // by default populates the screen with popular movies
@@ -99,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -160,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
                             String releasedate = part.getString("release_date");
                             movie.setReleasedate(releasedate);
 
-                            String id =part.getString("id");
+                            String id = part.getString("id");
                             movie.setId(id);
-                            String key =movie.getId();
+                            String key = movie.getId();
 
                         }
 
@@ -185,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             mprogressbar.cancel();
             imageadapter.setGridData(arrayList);
-   }
+        }
     }
 
     @Override
@@ -199,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         int itemThatWasClickedId = item.getItemId();
         if (itemThatWasClickedId == R.id.sortby_pop) {
             arrayList.clear();
+            view();
             Toast.makeText(context, "Sorting by Popular Movies", Toast.LENGTH_SHORT).show();
             SearchQuery(POP_MOVIE);
 
@@ -206,14 +211,12 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (itemThatWasClickedId == R.id.sortby_toprated) {
             arrayList.clear();
+            view();
+
             Toast.makeText(context, "Sorting by Top Rated Movies", Toast.LENGTH_SHORT).show();
             SearchQuery(TOP_RATED);
-        }
-        else if (itemThatWasClickedId == R.id.sortby_Favourites) {
-
-            Intent intent = new Intent(this, FavouriteMovies.class);
-            startActivity(intent);
-
+        } else if (itemThatWasClickedId == R.id.sortby_Favourites) {
+            views2();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -224,11 +227,41 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void view() {
+        imageadapter = new Imageadapter(this, R.layout.singleitem, arrayList);
+        gridView.setAdapter(imageadapter);
+        imageadapter.notifyDataSetChanged();
+    }
 
+    public void views2() {
+        secarray = new ArrayList<>();
+        moviesAdapter = new Imageadapter(this, R.layout.singleitem, secarray);
+        gridView.setAdapter(moviesAdapter);
+        moviesAdapter.notifyDataSetChanged();
+        moviedbh = new MovieDbHelper(this);
+        getAllFavourites();
+
+    }
+
+    private void getAllFavourites() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+
+                secarray.clear();
+                secarray.addAll(moviedbh.getAllfavourites());
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                moviesAdapter.notifyDataSetChanged();
+            }
+        }.execute();
+    }
 
     public static URL url = null;
-
-
 
 
     public static URL buildUrltrailer(String key) {
@@ -249,10 +282,11 @@ public class MainActivity extends AppCompatActivity {
 
         return url;
     }
-    void testmethod(){
+
+    void testmethod() {
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-               url.toString(), null,
+                url.toString(), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -267,11 +301,11 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject obj = results.getJSONObject(i);
                                 String key = obj.getString("key");
                                 String name = obj.getString("name");
-                                trailer= new trailermodel();
+                                trailer = new trailermodel();
                                 trailer.setMoviename(name);
 
                                 trailer.setKey(key);
-                                Log.i("key",name);
+                                Log.i("key", name);
                                 secarrayList.add(trailer);
                             }
 

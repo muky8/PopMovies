@@ -1,11 +1,13 @@
 package com.example.mukhter.popmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -22,11 +24,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.mukhter.popmovies.model.Popularmovies_model;
 import com.example.mukhter.popmovies.model.Reviewmodel;
 import com.example.mukhter.popmovies.model.trailermodel;
 import com.example.mukhter.popmovies.network.Networkutils;
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -64,10 +69,19 @@ public class Detailactivity extends AppCompatActivity {
     private String id;
     public static final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch";
     ArrayList<Reviewmodel> arrayList;
-
+    MovieDbHelper moviedbh;
+   public String image;
+    public String originaltitle;
+    public String plotsynopsis;
+    public String userrating;
+   public String releasedate;
+    public String backdrop;
+    MaterialFavoriteButton materialFavoriteButtonNice;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        moviedbh = new MovieDbHelper(this);
         setContentView(R.layout.activity_detailactivity);
         ButterKnife.inject(this);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -78,12 +92,12 @@ public class Detailactivity extends AppCompatActivity {
         collapsingToolbarLayout.setTitle("Movie Details");
         Intent intent = getIntent();
         Popularmovies_model pop = intent.getParcelableExtra("Popmovies");
-        String image = pop.getImage();
-        String originaltitle = pop.getOriginaltitle();
-        String plotsynopsis = pop.getPlotsynopsis();
-        String userrating = pop.getUserrating();
-        String releasedate = pop.getReleasedate();
-        String backdrop = pop.getBackdrop();
+        image = pop.getImage();
+         originaltitle = pop.getOriginaltitle();
+        plotsynopsis = pop.getPlotsynopsis();
+         userrating = pop.getUserrating();
+         releasedate = pop.getReleasedate();
+        backdrop = pop.getBackdrop();
           id =pop.getId();
         Picasso.with(this).load(image).into(thumbnail);
         Picasso.with(this).load(backdrop).into(backdropid);
@@ -91,11 +105,44 @@ public class Detailactivity extends AppCompatActivity {
         Plotsynopsis.setText(plotsynopsis);
         Userrating.setText(userrating);
         Releasedate.setText(releasedate);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 
+
+
+         materialFavoriteButtonNice =
+                (MaterialFavoriteButton) findViewById(R.id.toggleButton);
+        materialFavoriteButtonNice.setOnFavoriteChangeListener(
+                new MaterialFavoriteButton.OnFavoriteChangeListener(){
+                    @Override
+                    public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite){
+                        if (favorite){
+
+                            boolean isnserted= moviedbh.insertvalues(id,originaltitle,image,
+                                    backdrop,releasedate,userrating,plotsynopsis);
+                            if (isnserted=true) {
+                                SharedPreferences.Editor editor =
+                                        getSharedPreferences("com.example.mukhter.popmovies.Detailactivity", MODE_PRIVATE).edit();
+                                editor.putBoolean("Favorite Added",true);
+                                editor.commit();
+
+                            }
+                        }else{
+                            int movie_id = Integer.parseInt(id);
+                            moviedbh = new MovieDbHelper(Detailactivity.this);
+                            moviedbh.deleteFavorite(movie_id);
+
+                            SharedPreferences.Editor editor =
+                                    getSharedPreferences("com.example.mukhter.popmovies.Detailactivity", MODE_PRIVATE).edit();
+                            editor.putBoolean("Favorite Removed", false);
+                            editor.commit();
+                        }
+
+                    }
+                }
+        );
 
     }
-
 
 
 

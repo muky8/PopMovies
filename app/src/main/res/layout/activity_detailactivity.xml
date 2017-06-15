@@ -98,8 +98,7 @@
                     android:id="@+id/Movietitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="Chappie"
+                    android:maxLines="1" tools:text="Chappie"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="20sp"
                     android:ellipsize="end"
@@ -130,7 +129,7 @@
                                android:layout_marginLeft="230dp"
                                android:layout_marginTop="35dp"
                                android:fontFamily="serif"
-                               android:text="8.3/10"
+                           tools:text="8.3/10"
                                android:textSize="@dimen/small_size"
                                android:textColor="@color/colorPrimaryDark"/>
 
@@ -140,7 +139,7 @@
                            android:layout_below="@+id/userrating"
                            android:layout_marginTop="15dp"
                            android:layout_marginLeft="230dp"
-                           android:text="Review"
+                           tools:text="Review"
                            android:textColor="#78f"
                            android:onClick="Review"
                            android:id="@+id/trailers"/>
@@ -154,13 +153,24 @@
                            android:layout_alignParentLeft="true"
                            android:layout_alignParentStart="true" />
 
+                       <com.github.ivbaranov.mfb.MaterialFavoriteButton
+                           android:layout_width="100dp"
+                           android:layout_height="120dp"
+                           android:layout_alignParentBottom="true"
+                           android:layout_alignLeft="@+id/trailers"
+                           android:layout_alignStart="@+id/trailers"
+                           android:layout_marginBottom="18dp"
+                           android:id="@+id/toggleButton"
+                           android:background="@color/colorAccent"
+                            />
+
                    </RelativeLayout>
 
                </RelativeLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Trailer"
+                tools:text="Trailer"
                 android:textSize="20sp"
                 android:textColor="@color/colorPrimaryDark"/>
 

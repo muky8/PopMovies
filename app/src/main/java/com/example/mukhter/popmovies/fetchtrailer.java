@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class fetchtrailer {
     private static final String TAG = MainActivity.class.getSimpleName();
-    public static final String API_KEY = "0e067356a27385b1d3ffd877d6773f75"; //API key required
+    public static final String API_KEY = ""; //API key required
     public static final String BASE_URL = "http://api.themoviedb.org/3/movie";
     public static final String VIDEO ="videos";
     public static final String queryparam = "api_key";
