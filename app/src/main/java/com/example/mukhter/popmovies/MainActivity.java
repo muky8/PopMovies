@@ -2,8 +2,10 @@ package com.example.mukhter.popmovies;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -28,6 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.evernote.android.state.StateSaver;
 import com.example.mukhter.popmovies.model.trailermodel;
 import com.example.mukhter.popmovies.network.InternetConnection;
 import com.example.mukhter.popmovies.network.Networkutils;
@@ -43,7 +46,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.mukhter.popmovies.MovieContract.MovieEntry.CONTENT_URI;
+
 public class MainActivity extends AppCompatActivity {
+    private static final String MOVIE_KEY = "key";
     String items;
     private static final String POP_MOVIE = "popular";
     private static final String TOP_RATED = "top_rated";
@@ -54,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     JSONArray array;
     JSONObject part;
     static List<String> urls;
-    ArrayList<Popularmovies_model> arrayList, secarray;
+    public ArrayList<Popularmovies_model> arrayList, secarray;
     static ArrayList<trailermodel> secarrayList;
     static int mcurrentposition;
     Imageadapter imageadapter;
@@ -76,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             //internet available
         } else {
             Toast.makeText(context, "Check internet connection", Toast.LENGTH_SHORT).show();
+
         }
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -101,20 +108,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        int m = savedInstanceState.getInt("mystate");
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mcurrentposition = gridView.getFirstVisiblePosition();
-        outState.putInt("mystate", mcurrentposition);
     }
 
 

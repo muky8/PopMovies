@@ -1,7 +1,9 @@
 package com.example.mukhter.popmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
@@ -70,13 +73,15 @@ public class Detailactivity extends AppCompatActivity {
     public static final String YOUTUBE_BASE_URL = "https://www.youtube.com/watch";
     ArrayList<Reviewmodel> arrayList;
     MovieDbHelper moviedbh;
-   public String image;
+    public String image;
     public String originaltitle;
     public String plotsynopsis;
     public String userrating;
-   public String releasedate;
+    public String releasedate;
     public String backdrop;
     MaterialFavoriteButton materialFavoriteButtonNice;
+    Popularmovies_model popularmovies_model;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,14 +96,14 @@ public class Detailactivity extends AppCompatActivity {
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle("Movie Details");
         Intent intent = getIntent();
-        Popularmovies_model pop = intent.getParcelableExtra("Popmovies");
+        final Popularmovies_model pop = intent.getParcelableExtra("Popmovies");
         image = pop.getImage();
-         originaltitle = pop.getOriginaltitle();
+        originaltitle = pop.getOriginaltitle();
         plotsynopsis = pop.getPlotsynopsis();
-         userrating = pop.getUserrating();
-         releasedate = pop.getReleasedate();
+        userrating = pop.getUserrating();
+        releasedate = pop.getReleasedate();
         backdrop = pop.getBackdrop();
-          id =pop.getId();
+        id = pop.getId();
         Picasso.with(this).load(image).into(thumbnail);
         Picasso.with(this).load(backdrop).into(backdropid);
         Originaltitle.setText(originaltitle);
@@ -108,30 +113,29 @@ public class Detailactivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 
-
-
-         materialFavoriteButtonNice =
+        materialFavoriteButtonNice =
                 (MaterialFavoriteButton) findViewById(R.id.toggleButton);
         materialFavoriteButtonNice.setOnFavoriteChangeListener(
-                new MaterialFavoriteButton.OnFavoriteChangeListener(){
+                new MaterialFavoriteButton.OnFavoriteChangeListener() {
                     @Override
-                    public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite){
-                        if (favorite){
+                    public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
+                        if (favorite) {
 
-                            boolean isnserted= moviedbh.insertvalues(id,originaltitle,image,
-                                    backdrop,releasedate,userrating,plotsynopsis);
-                            if (isnserted=true) {
+                            boolean isnserted = moviedbh.insertvalues(id, originaltitle, image,
+                                    backdrop, releasedate, userrating, plotsynopsis);
+                            if (isnserted = true) {
+                                materialFavoriteButtonNice.setImageDrawable(ContextCompat.getDrawable(Detailactivity.this, R.drawable.ic_star_black_24dp));
                                 SharedPreferences.Editor editor =
                                         getSharedPreferences("com.example.mukhter.popmovies.Detailactivity", MODE_PRIVATE).edit();
-                                editor.putBoolean("Favorite Added",true);
+                                editor.putBoolean("Favorite Added", true);
                                 editor.commit();
 
                             }
-                        }else{
+                        } else {
                             int movie_id = Integer.parseInt(id);
                             moviedbh = new MovieDbHelper(Detailactivity.this);
                             moviedbh.deleteFavorite(movie_id);
-
+                            materialFavoriteButtonNice.setImageDrawable(ContextCompat.getDrawable(Detailactivity.this, R.drawable.ic_star_border_black_24dp));
                             SharedPreferences.Editor editor =
                                     getSharedPreferences("com.example.mukhter.popmovies.Detailactivity", MODE_PRIVATE).edit();
                             editor.putBoolean("Favorite Removed", false);
@@ -145,17 +149,16 @@ public class Detailactivity extends AppCompatActivity {
     }
 
 
-
     public void launchYoutubeIntent(String video_key) {
-        if(video_key != null) {
+        if (video_key != null) {
             Intent intent;
-            if(checkAppInstalled("com.google.android.youtube")) {
+            if (checkAppInstalled("com.google.android.youtube")) {
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube://" + video_key));
 
             } else {
                 Uri browser_YT = Uri.parse("https://www.youtube.com/watch")
                         .buildUpon()
-                        .appendQueryParameter("v",video_key)
+                        .appendQueryParameter("v", video_key)
                         .build();
                 intent = new Intent(Intent.ACTION_VIEW, browser_YT);
 
@@ -167,7 +170,7 @@ public class Detailactivity extends AppCompatActivity {
 
     public boolean checkAppInstalled(String package_name) {
         Intent intent = getApplicationContext().getPackageManager().getLaunchIntentForPackage(package_name);
-        if(intent != null) {
+        if (intent != null) {
             return true;
         }
         return false;
@@ -184,18 +187,8 @@ public class Detailactivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-    public void watchTrailer(View view){
-        String stringUri = BASE_URL +"/"+ id + "/videos";
+    public void watchTrailer(View view) {
+        String stringUri = BASE_URL + "/" + id + "/videos";
         final Uri uri = Uri.parse(stringUri).buildUpon()
                 .appendQueryParameter(Networkutils.queryparam, Networkutils.API_KEY)
                 .build();
@@ -210,7 +203,7 @@ public class Detailactivity extends AppCompatActivity {
 
                 try {
                     url = new URL(uri.toString());
-                }catch (MalformedURLException e){
+                } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
                 try {
@@ -250,7 +243,7 @@ public class Detailactivity extends AppCompatActivity {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(uri1);
 
-                if (i.resolveActivity(getPackageManager()) != null){
+                if (i.resolveActivity(getPackageManager()) != null) {
                     startActivity(i);
                 }
 
@@ -264,7 +257,7 @@ public class Detailactivity extends AppCompatActivity {
 
 
     public void reviewmethod() {
-        String stringUri = BASE_URL +"/"+ id + "/reviews";
+        String stringUri = BASE_URL + "/" + id + "/reviews";
         final Uri uri = Uri.parse(stringUri).buildUpon()
                 .appendQueryParameter(Networkutils.queryparam, Networkutils.API_KEY)
                 .build();
@@ -279,7 +272,7 @@ public class Detailactivity extends AppCompatActivity {
 
                 try {
                     url = new URL(uri.toString());
-                }catch (MalformedURLException e){
+                } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
                 try {
@@ -302,14 +295,14 @@ public class Detailactivity extends AppCompatActivity {
 
                 JSONArray jsonArray = null;
                 JSONObject jsonObject1 = null;
-                 arrayList=new ArrayList<>();
-                String author,content;
-              Reviewmodel model = new Reviewmodel();
+                arrayList = new ArrayList<>();
+                String author, content;
+                Reviewmodel model = new Reviewmodel();
                 try {
                     jsonArray = jsonObject.getJSONArray("results");
                     jsonObject1 = jsonArray.getJSONObject(0);
                     author = jsonObject1.getString("author");
-                    content =jsonObject1.getString("content");
+                    content = jsonObject1.getString("content");
                     model.setAuthor(author);
                     model.setContent(content);
 
@@ -318,12 +311,11 @@ public class Detailactivity extends AppCompatActivity {
                 }
 
 
-
                 Intent intent = new Intent(Detailactivity.this, Reviewactivity.class);
                 intent.putExtra("review", model);
 
                 startActivity(intent);
-                    arrayList.add(model);
+                arrayList.add(model);
 
             }
         };

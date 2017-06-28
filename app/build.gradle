@@ -40,4 +40,8 @@ dependencies {
     compile 'com.android.support:cardview-v7:+'
     compile 'com.github.ivbaranov:materialfavoritebutton:0.1.4'
 
+    compile 'com.evernote:android-state:1.1.0'
+    // Java only project
+    annotationProcessor 'com.evernote:android-state-processor:1.1.0'
+
 }

@@ -8,9 +8,11 @@ import android.provider.BaseColumns;
  */
 
 public class MovieContract {
-    public static final String AUTHORITY = "com.example.mukhter.popmovie$s";
+    public static final String AUTHORITY = "com.example.mukhter.popmovies";
     public static final Uri BASE_URL = Uri.parse("content://" + AUTHORITY);
     public static final String PATH = "movie";
+    public static final int MOVIE = 100;
+    public static final int MOVIE_ID = 110;
     private MovieContract(){
 
     }

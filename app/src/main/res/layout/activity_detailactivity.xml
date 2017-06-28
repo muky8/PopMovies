@@ -64,7 +64,7 @@
                     android:layout_marginTop="25dp"
                     android:padding="8dp"
                     android:scrollbars="vertical"
-                    android:text="Chapie is a robot."
+                    tools:text="Chapie is a robot."
                     android:textSize="@dimen/medium_size"
                     android:textColor="@color/colorPrimaryDark"/>
 
@@ -162,6 +162,7 @@
                            android:layout_marginBottom="18dp"
                            android:id="@+id/toggleButton"
                            android:background="@color/colorAccent"
+
                             />
 
                    </RelativeLayout>
